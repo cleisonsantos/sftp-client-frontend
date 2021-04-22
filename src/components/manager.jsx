@@ -3,6 +3,19 @@ import Folder from "./folder"
 import File from "./file"
 import api from '../services/api'
 
+import styled from "styled-components"
+
+const Ul = styled.ul`
+    /* display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    height: auto;
+    min-height: 100%; */
+    list-style: none;
+    padding: 0.5rem 5rem;
+    background-color: #777;
+`;
+
 function Manager() {
   const [data, setData] = useState([])
 
@@ -26,10 +39,7 @@ function Manager() {
 
     getData()
 
-
-
-
-  }, [data])
+  }, [])
 
   const folders = (data) => {
     let folders = data.filter(folder => {
@@ -45,39 +55,51 @@ function Manager() {
     return files = files.sort((a, b) => { return a.name.localeCompare(b.name) })
   }
 
+  const acessFolder = async (folder) => {
 
-  const renderFolders = () => {
-    // return console.log(folders(data))
-    if (folders(data)) {
-      // console.log(folders(data))
-      
+    console.log(folder)
+    try {
+
+      const res = await api.get(`/sftp/${folder}`)
+      // return console.log(res.data)
+      setData(res.data)
+
+    } catch (error) {
+
+      console.log(error)
+
     }
+
   }
 
-  const renderFiles = () => {
-    // return )
-    if (files(data)) {
-      // console.log(files(data))
-      
+  const biRef = {
+    parent: {
+      acessFolder
     }
   }
 
   return (
     <>
-    <ul>
-      {
-        folders(data).map((folder, index) => (
-          <Folder name={folder.name} id={`${index}-${folder.name}`} />
-        )
-        )
-      }
-      {
-        files(data).map((file, index) => (
-          <File name={file.name} id={`${index}-${file.name}`} />
-          )
-        )    
-      }
-    </ul>
+      <Ul>
+        {
+          folders(data).map((folder, index) => {
+
+            return <Folder
+              biRef={biRef}
+              key={`${index}-${folder.name}`}
+              name={folder.name}
+              id={`${index}-${folder.name}`} />
+          })
+        }
+        {
+          files(data).map((file, index) => {
+            return <File
+              key={`${index}-${file.name}`}
+              name={file.name}
+              id={`${index}-${file.name}`} />
+          })
+        }
+      </Ul>
     </>
   )
 }
