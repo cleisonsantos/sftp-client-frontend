@@ -3,18 +3,20 @@ import Folder from "./folder"
 import File from "./file"
 import api from '../services/api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faFolder } from '@fortawesome/free-solid-svg-icons'
-
+import { faArrowUp, faFolder, faFolderPlus } from '@fortawesome/free-solid-svg-icons'
 import styled from "styled-components"
 
-const Header = styled.div`
+
+function Manager(props) {
+
+  const Header = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
   padding: .5rem 5rem;
   padding-bottom: 0px;
   list-style: none;
-  background-color: #777;
+  background-color: ${props.theme.secondary};
 
   @media(max-width: 600px){
     padding: .5rem .5rem;
@@ -28,23 +30,23 @@ const Ul = styled.ul`
     height: auto;
     list-style: none;
     padding: 0.5rem 5rem;
-    background-color: #777;
+    background-color: ${props.theme.secondary};
 
   @media(max-width: 600px){
     padding: .5rem .5rem;
   }
 `;
 
-const Li = styled.li`
+const HeaderButton = styled.button`
     padding: 1rem;
-    background-color: beige;
+    background-color: ${props => props.bg};
     /* border-bottom: 1px solid #916c3c60; */
     border-radius: 8px;
     margin: 4px;
     
 
     &:hover {
-        background-color: #bdbda8;
+        /* background-color: #bdbda8; */
         cursor: pointer;
         box-shadow: 2px 2px 3px #555;
     }
@@ -55,12 +57,13 @@ const H3 = styled.h3`
     padding: .75rem;
     border-radius: 8px;
     font-weight: bold;
-    background-color: #eee;
+    background-color: ${props.theme.light};
     margin: 4px;
 
 `;
 
-function Manager() {
+
+
   const [data, setData] = useState([])
   const [currentPath, setCurrentPath] = useState("")
   useEffect(() => {
@@ -177,10 +180,14 @@ function Manager() {
     <>
     <Header >
         
-        <Li onClick={() => dotDot()}>
+        <HeaderButton bg={props.theme.light} onClick={() => console.log("Add Pasta")}>
+        <FontAwesomeIcon icon={faFolderPlus} size="lg" />
+        </HeaderButton>
+
+        <HeaderButton bg={props.theme.light} onClick={() => dotDot()}>
         <FontAwesomeIcon icon={faFolder} size="lg" />
         <FontAwesomeIcon icon={faArrowUp} size="sm" />
-        </Li>
+        </HeaderButton>
         <H3>{ localization }</H3>
 
     </Header>
@@ -192,7 +199,8 @@ function Manager() {
               parentFunctions={parentFunctions}
               key={`${index}-${folder.name}`}
               name={folder.name}
-              id={`${index}-${folder.name}`} />
+              id={`${index}-${folder.name}`}
+              theme={props.theme} />
           })
         }
         {
@@ -200,7 +208,8 @@ function Manager() {
             return <File
               key={`${index}-${file.name}`}
               name={file.name}
-              id={`${index}-${file.name}`} />
+              id={`${index}-${file.name}`}
+              theme={props.theme} />
           })
         }
       </Ul>
